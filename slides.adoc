@@ -56,20 +56,20 @@ TIP: _Slides_ here {slides-url}
 ====
 * icon:clock-o[] Support for Java SE
 * icon:clock-o[] Programmatic way to activate Request Context
-* icon:clock-o[] Events Ordering
-* icon:clock-o[] Asynchronous events
-
-* icon:clock-o[] http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#configurators[Configurators^] for major SPI elements
-* icon:clock-o[] Possibility to http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#process_observer_method[configure or veto observer methods^].
-* icon:clock-o[] Add http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#built_in_annotation_literals[built-in annotation literals^]
-* icon:clock-o[] Make possible to http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#interception_factory[apply interceptor on producers^].
+* icon:clock-o[] Events enhancement
+* icon:clock-o[] A new option for bean discovery mode
+* icon:clock-o[] Built-in annotation Literals
+* icon:clock-o[] Appy interceptor on produced beans
+* icon:clock-o[] Built-in annotation Literals
+* icon:clock-o[] Configurator API
 * icon:clock-o[] Alignment on Java 8 features (streams, lambdas, repeating qualifiers)
-* icon:clock-o[]
 ====
 
 
 
-include::parts/intro.adoc[]
+include::parts/javase.adoc[]
+include::parts/controllingRequestContext.adoc[]
+include::parts/events.adoc[]
 
 
 
