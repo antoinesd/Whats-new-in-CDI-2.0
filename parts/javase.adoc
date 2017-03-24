@@ -1,0 +1,34 @@
+[.intro]
+== Java SE Support
+
+[.topic]
+== Why did we add SE support?
+
+TIP: To align on many other Java EE spec which support Java SE bootstrapping
+TIP: To boost CDI adoption for Spec and Frameworks
+TIP: To provide a mean of building new stacks out of Java EE
+
+[.topic]
+== Splitting the CDI spec
+
+TIP: To add Java SE we split the spec
+
+* CDI core
+* CDI for Java SE
+* CDI for Java EE 
+
+[.topic]
+== Bootstrap API
+
+[source, subs="verbatim,quotes"]
+----
+public static void main(String[] args) {      SeContainer container = SeContainerInitializer.newInstance() //<1>             .disableDiscovery()             .addBeanClasses(MyService.class)             .initialize();      MyService service = container.select(MyService.class).get(); //<2>      service.sayHello();      container.close(); }
+----
+<1> `SeContainerInitializer` is a new api to configure and bootstrap a CDI container under Java SE. 
+<2> it returns a `SeContainer` that implements `Instance<Object>` allowing programmatic lookup
+
+
+[.topic]
+== Main configuration option for the container
+
+//TODO: a bit of SeContainerInitializer javadoc with explanantion on main methods

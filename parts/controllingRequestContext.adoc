@@ -1,0 +1,47 @@
+[.intro]
+==  Controlling Request Context
+
+[.topic]
+== Request context is versatile
+
+Request context is automatically activated in multiple places:
+
+* During HttpRequest Lifecycle
+* During asynchronous operation
+* During MDB call
+
+[.topic]
+== Why adding a manual control?
+
+TIP: In Java SE user may want to use `@RequestScoped` bean
+TIP: 3rd party framework developpers may want to have their own _request_ lifecycle without having to create a custom context.
+
+[.topic]
+== What about other built-in context?
+
+CAUTION: Doesn't make sense for Application Context
+CAUTION: Lifetime of Dependent context is too short
+CAUTION: Conversation Context is already controlled programmatically
+CAUTION: Session context is very special animal, we may consider adding this for it in a next CDI version
+
+
+[.topic]
+== Control via interceptor 
+
+[source, subs="verbatim,quotes"]
+----
+@ApplicationScoped public class MyBean {      @ActivateRequestContext // <1>     public void doRequest(String body) {         // Request Context will be activated during this invocation     } }
+
+----
+<1> CDI 2.0 provides `@ActivateRequestContext` interceptor to activate request during method invocation
+
+
+[.topic]
+== Pogrammatic control
+
+[source, subs="verbatim,quotes"]
+----
+@ApplicationScoped public class MyBean {      @Inject     private RequestContextController requestContextController; //<1>          public void doRequest(String body) {         // activate request context         requestContextController.activate();          // do work in a request context.          // deactivate the request context         requestContextController.deactivate();     }  }
+----
+<1> CDI 2.0 provides a new built-in bean of type `RequestContextController` to allow manual activation and deactivation of the Request Context. 
+
