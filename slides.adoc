@@ -1,0 +1,99 @@
+= What's new in _CDI_ 2.0
+Antoine Sabot-Durand
+:description: Intrdocution to CDI
+:license: CC BY-SA 4.0
+:license-url: https://creativecommons.org/licenses/by-sa/4.0/
+:backend: dzslides
+:sectids!:
+:experimental:
+:toc2:
+:data-uri:
+:sectanchors:
+:idprefix:
+:idseparator: -
+:icons: font
+:source-highlighter: highlightjs
+:source-language: java
+:language: no-highlight
+:macros-on: subs="macros"
+:caption-off: caption=""
+:title-off: title="", caption=""
+:dzslides-aspect: 16-9
+:imagesdir: images
+:spec-url: https://cdi-spec.org
+:twitter_handle: antoine_sd
+:next-label: pass:quotes,attributes[*Next* [icon:caret-right[]]
+:dzslides-style: asciidoctor
+:dzslides-highlight: github
+:dzslides-transition: fade
+:dzslides-fonts: family=Neuton:400,700,800,400italic|Cedarville+Cursive
+:stylesdir: stylesheets
+:stylesheet: custom.css
+:hide-uri-scheme:
+
+
+
+
+[.topic]
+== Me, Myself and I
+//TODO: add a picture
+[.smaller]
+====
+* icon:coffee[] Antoine Sabot-Durand
+* icon:linux[] Red Hat
+* icon:code[] CDI spec lead
+* icon:twitter[] @antoine_sd
+* icon:rss[] next-presso.com
+* icon:github[] github.com/antoinesd
+====
+
+[.topic]
+== Agenda
+
+TIP: _Slides_ here {slides-url}
+
+[.fartoosmall]
+====
+* icon:clock-o[] Support for Java SE
+* icon:clock-o[] Programmatic way to activate Request Context
+* icon:clock-o[] Events Ordering
+* icon:clock-o[] Asynchronous events
+
+* icon:clock-o[] http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#configurators[Configurators^] for major SPI elements
+* icon:clock-o[] Possibility to http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#process_observer_method[configure or veto observer methods^].
+* icon:clock-o[] Add http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#built_in_annotation_literals[built-in annotation literals^]
+* icon:clock-o[] Make possible to http://docs.jboss.org/cdi/spec/2.0-PRD/cdi-spec.html#interception_factory[apply interceptor on producers^].
+* icon:clock-o[] Alignment on Java 8 features (streams, lambdas, repeating qualifiers)
+* icon:clock-o[]
+====
+
+
+
+include::parts/intro.adoc[]
+
+
+
+
+[.intro]
+== Conclusion
+
+
+[.topic]
+== References
+
+NOTE: _Slides_ are accessible here {slides-url}
+
+NOTE: _Slides source_ {slides-src}
+
+NOTE: Slides generated with _Asciidoctor_ and _DZSlides_ backend
+
+NOTE: Original slide template - _Dan Allen_ & _Sarah White
+
+NOTE: License of this doc: {license-url}[{license}]
+
+
+[.topic.ending, hrole="name"]
+== {author}
+
+[.footer]
+icon:twitter[] @{twitter_handle}
