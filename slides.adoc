@@ -31,6 +31,7 @@ Antoine Sabot-Durand
 :stylesheet: custom.css
 :hide-uri-scheme:
 :slides-url: http://bit.ly/newcdi2
+:slides-src: https://github.com/antoinesd/Whats-new-in-CDI-2.0
 
 
 [.topic]
@@ -49,7 +50,7 @@ Antoine Sabot-Durand
 [.topic]
 == Agenda
 
-//TIP: _Slides_ here {slides-url}
+TIP: _Slides_ here {slides-url}[{slides-url}^]
 
 [.smallest]
 ====
@@ -87,9 +88,9 @@ include::parts/testing_cdi2.adoc[]
 [.topic]
 == References
 
-NOTE: _Slides_ are accessible here {slides-url}
+NOTE: _Slides_ are accessible here {slides-url}[{slides-url}^]
 
-NOTE: _Slides source_ {slides-src}
+NOTE: _Slides source_ {slides-src}[{slides-src}^]
 
 NOTE: Slides generated with _Asciidoctor_ and _DZSlides_ backend
 
@@ -102,4 +103,4 @@ NOTE: License of this doc: {license-url}[{license}]
 == {author}
 
 [.footer]
-icon:twitter[] @{twitter_handle}
+icon:twitter[] @{twitter_handle} / @cdispec

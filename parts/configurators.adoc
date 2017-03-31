@@ -83,7 +83,7 @@ public class LegacyClass {
 
 TIP: Injection code will look like
 
-[source, subs="verbatim,quotes"]
+[source, subs="verbatim,quotes", role="smaller"]
 ----
 public class InjectionBean {
 
