@@ -1,47 +1,78 @@
 [.intro]
-==  Controlling Request Context
+== Controlling Request Context
 
-[.topic]
-== Request context is versatile
+[.source]
+== Request context is automatically activated in multiple places
 
-Request context is automatically activated in multiple places:
+CAUTION: During servlet, filter or listener execution
 
-* During HttpRequest Lifecycle
-* During asynchronous operation
-* During MDB call
+CAUTION: During Java EE web service invocation
+
+CAUTION: During asynchronous observer invocation
+
+CAUTION: During any remote or asynchronous method invocation of any EJB
+
+CAUTION: During any call to an EJB timeout method and delivery to any MDB
+
+CAUTION: During `@Postconstruct` callback invocation for any bean
 
 [.topic]
 == Why adding a manual control?
 
 TIP: In Java SE user may want to use `@RequestScoped` bean
-TIP: 3rd party framework developpers may want to have their own _request_ lifecycle without having to create a custom context.
+
+TIP: 3rd party framework developers may want to have their own _request_ lifecycle without having to create a custom context.
+
 
 [.topic]
 == What about other built-in context?
 
 CAUTION: Doesn't make sense for Application Context
-CAUTION: Lifetime of Dependent context is too short
+
+CAUTION: Dependent context is always active by definition
+
 CAUTION: Conversation Context is already controlled programmatically
+
 CAUTION: Session context is very special animal, we may consider adding this for it in a next CDI version
 
 
 [.topic]
-== Control via interceptor 
+== Control via interceptor
 
 [source, subs="verbatim,quotes"]
 ----
-@ApplicationScoped public class MyBean {      @ActivateRequestContext // <1>     public void doRequest(String body) {         // Request Context will be activated during this invocation     } }
+@ApplicationScoped public class MyBean {  
 
+    @ActivateRequestContext //<1>
+    public void doRequest(String body) {
+
+         // Request Context will be activated during this invocation 
+
+    }
+ }
 ----
 <1> CDI 2.0 provides `@ActivateRequestContext` interceptor to activate request during method invocation
 
 
-[.topic]
+[.source]
 == Pogrammatic control
 
 [source, subs="verbatim,quotes"]
 ----
-@ApplicationScoped public class MyBean {      @Inject     private RequestContextController requestContextController; //<1>          public void doRequest(String body) {         // activate request context         requestContextController.activate();          // do work in a request context.          // deactivate the request context         requestContextController.deactivate();     }  }
-----
-<1> CDI 2.0 provides a new built-in bean of type `RequestContextController` to allow manual activation and deactivation of the Request Context. 
+@ApplicationScoped public class MyBean {  
 
+    @Inject 
+    private RequestContextController requestContextController;  //<1>
+
+    public void doRequest(String body) { 
+        // activate request context 
+        requestContextController.activate();  
+
+        // do work in a request context.  
+
+        // deactivate the request context 
+        requestContextController.deactivate(); 
+    }
+  }
+----
+<1> CDI 2.0 provides a new built-in bean of type `RequestContextController` to allow manual activation and deactivation of the Request Context.

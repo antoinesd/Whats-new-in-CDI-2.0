@@ -1,6 +1,6 @@
 [submodule "backends"]
 	path = backends
 	url = git@github.com:antoinesd/asciidoctor-backends.git
-[submodule "dzsildes"]
-	path = dzsildes
+[submodule "dzslides"]
+	path = dzslides
 	url = git@github.com:antoinesd/dzslides.git

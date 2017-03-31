@@ -4,31 +4,63 @@
 [.topic]
 == Why did we add SE support?
 
+[.statement]
+====
 TIP: To align on many other Java EE spec which support Java SE bootstrapping
+
 TIP: To boost CDI adoption for Spec and Frameworks
+
 TIP: To provide a mean of building new stacks out of Java EE
+====
 
 [.topic]
-== Splitting the CDI spec
+== Splitting the CDI spec for Java SE
 
-TIP: To add Java SE we split the spec
+[.statement]
+====
+CAUTION: CDI core
 
-* CDI core
-* CDI for Java SE
-* CDI for Java EE 
+CAUTION: CDI for Java SE
+
+CAUTION: CDI for Java EE
+====
 
 [.topic]
 == Bootstrap API
 
 [source, subs="verbatim,quotes"]
 ----
-public static void main(String[] args) {      SeContainer container = SeContainerInitializer.newInstance() //<1>             .disableDiscovery()             .addBeanClasses(MyService.class)             .initialize();      MyService service = container.select(MyService.class).get(); //<2>      service.sayHello();      container.close(); }
+public static void main(String[] args) {  
+    SeContainer container = SeContainerInitializer.newInstance() //<1>
+                                  .disableDiscovery()
+                                  .addBeanClasses(MyService.class)
+                                  .initialize();  
+    MyService service = container.select(MyService.class).get(); //<2>
+    service.sayHello();  
+    container.close(); 
+}
 ----
-<1> `SeContainerInitializer` is a new api to configure and bootstrap a CDI container under Java SE. 
+<1> `SeContainerInitializer` is a new api to configure and bootstrap a CDI container under Java SE.
 <2> it returns a `SeContainer` that implements `Instance<Object>` allowing programmatic lookup
 
 
-[.topic]
+[.source]
 == Main configuration option for the container
 
-//TODO: a bit of SeContainerInitializer javadoc with explanantion on main methods
+[source, subs="verbatim,quotes"]
+----
+public abstract class SeContainerInitializer {
+    public SeContainerInitializer addBeanClasses();
+    public SeContainerInitializer addPackages();
+    public SeContainerInitializer addExtensions();
+    public SeContainerInitializer enableInterceptors();
+    public SeContainerInitializer enableDecorators();
+    public SeContainerInitializer selectAlternatives();
+    public SeContainerInitializer selectAlternativeStereotypes();
+    public SeContainerInitializer addProperty(); //<1>
+    public SeContainerInitializer setProperties();
+    public SeContainerInitializer disableDiscovery(); //<2>
+    public SeContainerInitializer setClassLoader(); //<3>
+----
+<1> implementation specific properties can be passed to the container
+<2> By default bean discovery mode is `annotated`, you can disable it and add your bean classes with `addBeanClasses()` methods
