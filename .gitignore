@@ -13,3 +13,4 @@ logs/
 *.iml
 *.svg
 *.svg.cache
+*.pdf
