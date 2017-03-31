@@ -1,0 +1,193 @@
+[.intro]
+== Configurators API
+
+SPI made easy
+
+[.topic]
+== CDI SPI is a very powerful tool
+
+[.statement]
+====
+TIP: Yet, it is mainly used by advanced users
+
+TIP: In CDI 1.x using SPI use to generate verbose and non elegant code
+
+TIP: In CDI 2.0 the configurators solve this
+
+TIP: So in there are no more excuse to avoid SPI coding
+====
+
+[.topic]
+== SPI elements having a configurator
+
+TIP: Major element having a configurator
+
+[.fartoosmall]
+====
+[.split]
+* icon:sign-in[] `AnnotatedType` hierarchy
+* icon:sign-in[] `BeanAttributes`
+* icon:sign-in[] `Bean`
+* icon:sign-in[] `InjectionPoint`
+* icon:sign-in[] `ObserverMethod`
+* icon:sign-in[] `Producer`
+====
+
+TIP: These configurators are accessible in lifecycle container event when writing extensions
+
+TIP: But also in the standard programming model.
+
+TIP: Did you notice where we used one configurator in previous slides?
+
+[.source]
+== Imagine this use case
+
+TIP: You use a legacy framework you don't own
+
+TIP: This framework instantiates components using a config Map
+
+[source, subs="verbatim,quotes"]
+----
+public class LegacyClass {
+...
+    public void setConfig(Map<String, Object> config) {
+        this.config = config;
+    }
+...
+}
+----
+
+TIP: You'd like to inject the map instead of setting it the classical way
+
+[.source]
+== Solving this in CDI 1.2 1/
+
+TIP: You'll use an `InjectionTargetFactory` to do the job (and a producer for the config Map)
+
+TIP: To have the map injected you'll need to to create an AnnotatedType that simulate this
+
+[source, subs="verbatim,quotes"]
+----
+public class LegacyClass {
+...
+    [highlight]*@Inject*
+    public void setConfig(Map<String, Object> config) {
+        this.config = config;
+    }
+...
+}
+----
+
+[.source]
+== Solving this in CDI 1.2 - Perform the injection
+
+TIP: Injection code will look like
+
+[source, subs="verbatim,quotes"]
+----
+public class InjectionBean {
+
+    @Inject
+    BeanManager bm;
+
+    public LegacyClass getInjectedLegacy(LegacyClass component) {
+        AnnotatedType<LegacyClass> atmc = bm.createAnnotatedType(LegacyClass.class);
+        bm.getInjectionTargetFactory(new [highlight]*LegacyAnnotatedType*(atmc)) //<1>
+                .createInjectionTarget(null)
+                .inject(component,bm.createCreationalContext(null));
+        return component;
+    }
+}
+----
+<1> the verbose part
+
+[.source]
+== Solving this in CDI 1.2 - Implementing `AnnotatedType`
+
+[source, subs="verbatim,quotes", role="smaller"]
+----
+public class LegacyAnnotatedType implements AnnotatedType<LegacyClass> {
+
+    AnnotatedType<LegacyClass> delegate;
+
+    Set<AnnotatedMethod<? super LegacyClass>> methods = new HashSet<>();
+
+    public LegacyAnnotatedType(AnnotatedType<LegacyClass> atmc) {
+        delegate = atmc;
+        for (AnnotatedMethod<? super LegacyClass> am : delegate.getMethods()) {
+            if(am.getJavaMember().getName().equals("setConfig"))
+                methods.add(new InjectedMethod(am));
+            else
+                methods.add(am);
+        }
+    }
+
+    public Set<AnnotatedMethod<? super LegacyClass>> getMethods() {
+        return methods;
+    }
+
+    // 8 more methods calling delegate
+}
+----
+
+[.source]
+== Solving this in CDI 1.2 - Implementing `AnnotatedMethod`
+
+[source, subs="verbatim,quotes", role="fartoosmall"]
+----
+public class InjectedMethod<T> implements AnnotatedMethod<T> {
+
+    AnnotatedMethod<T> delegate;
+    Set<Annotation> annotations;
+
+    public InjectedMethod(AnnotatedMethod<T> am) {
+        delegate = am;
+        annotations = new HashSet<>(delegate.getAnnotations());
+        annotations.add(new AnnotationLiteral<Inject>() {
+        });
+    }
+
+    @Override
+    public Set<Annotation> getAnnotations() {
+        return annotations;
+    }
+
+    @Override
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        if(annotationType.equals(Inject.class))
+            return true;
+        return delegate.isAnnotationPresent(annotationType);
+    }
+
+    // 8 more methods calling delegate
+}
+----
+
+[.source]
+== Solving this in CDI 2.0 - In original code
+
+[source, subs="verbatim,quotes", role="smallest"]
+----
+@ApplicationScoped
+public class InjectionBean {
+
+    @Inject
+    BeanManager bm;
+
+    public LegacyClass getInjectedLegacy(LegacyClass component) {
+        AnnotatedType<LegacyClass> atmc = bm.createAnnotatedType(LegacyClass.class);
+
+        InjectionTargetFactory<LegacyClass> itf = bm.getInjectionTargetFactory(atmc));
+        itf.configure().filterMethods(m -> m.getJavaMember()
+                .getName().equals("setConfig"))
+                .findFirst()
+                .ifPresent(m -> m.add(InjectLiteral.INSTANCE));
+
+        itf.createInjectionTarget(null)
+                .inject(component, bm.createCreationalContext(null));
+
+        return component;
+    }
+
+}
+----

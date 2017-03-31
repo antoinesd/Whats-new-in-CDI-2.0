@@ -1,0 +1,61 @@
+[.intro]
+== Interceptors enhancement
+
+Interceptors easier to apply
+
+
+
+[.topic]
+== Introducing `InterceptionFactory`
+
+[source, subs="verbatim,quotes"]
+----
+public interface InterceptionFactory<T> {
+
+    InterceptionFactory<T> ignoreFinalMethods(); //<1>
+
+    AnnotatedTypeConfigurator<T> configure(); //<2>
+
+    T createInterceptedInstance(T instance); //<3>
+}
+----
+<1> forces creation of the interceptor even if the class to intercept has non static final methods (those shouldn't be called in the intercepted instance of course)
+<2> allow addition of Interceptor bindings on the class and or method of the class to intercept
+<3> create an intercepted version of the instance passed in parameter
+
+[.topic]
+== Accessing `InterceptionFactory`
+
+TIP: By injecting the `InterceptionFactory` built-in bean. Useful to apply interceptors on a produced bean
+
+[source, subs="verbatim,quotes"]
+----
+@Produces 
+ public MyClass createMyClass(InterceptionFactory<MyClass> ify) { 
+      ify.configure().addAnnotation(new AnnotationLiteral<Transactional>() {};
+    return ify.createInterceptedInstance(new MyClass());  
+}
+----
+
+TIP: By calling `BeanManager.createInterceptionFactory()`. Useful for custom beans creation or other advanced usages
+
+[.source]
+== Applying interceptor binding on methods
+
+TIP: You can add your interceptor on specific methods instead of all class
+
+[source, subs="verbatim,quotes"]
+----
+@Produces 
+ public MyClass createMyClass(InterceptionFactory<MyClass> ify) { 
+    AnnotatedTypeConfigurator<MyClass> atc = ify.configure(); 
+
+    atc.filterMethods(m -> m.getJavaMember().getName().equals("doSomething")) //<1>
+        .findFirst()
+        .ifPresent(m -> m.add(new AnnotationLiteral<Transactional>() { }));  //<2>
+    return ify.createInterceptedInstance(new MyClass());   //<3>
+}
+----
+<1> retrieving the `doSomething()` method in `MyClass`
+<2> adding `@Literal` on it
+<3> returning an instance of `MyClass` whose `doSomething()` is now transactional

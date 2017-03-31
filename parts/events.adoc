@@ -3,12 +3,15 @@
 
 
 [.topic]
-== CDI 2.0 events enhancement 
+== CDI 2.0 events enhancement
 
 TIP: Events ordering
+
 TIP: Asynchronous events
-TIP: Better events from outside CDI programming model
-TIP: Better synthetic observers control and creation
+
+TIP: Better programmatic solution to fire event
+
+TIP: Better observers control and creation
 
 
 [.intro]
@@ -16,6 +19,45 @@ TIP: Better synthetic observers control and creation
 
 Observers ordering
 
+[.topic]
+== Ordering Observers
+
+TIP: By adding a @Priority (from commons annotations) on an observer.
+
+TIP: The lowest value is first
+
+TIP: Observers with no explicit priority have a middle range priority
+
+TIP: Observer with the same priority are called in an undefined order
+
+TIP: No priority on async events
+
+[.source]
+== Ordering Observers
+
+[source, subs="verbatim,quotes"]
+----
+public void observer1(@Observes @Priority(1) Payload p) { ... }//<1>
+
+
+public void observer2(@Observes @Priority(2) Payload p) { ... }
+
+----
+<1> Commons Annotation 1.3 now allows using `@Priority` on a method parameter
+
+TIP: Also work on extension observers:
+
+[source, subs="verbatim,quotes"]
+----
+public class MyExtension implements Extension {  
+
+  public void firstPat(@Observes @Priority(1) ProcessAnnotatedType<?> pat) {
+  }
+
+  public void secondPat(@Observes @Priority(2) ProcessAnnotatedType<?> pat) {
+  }
+}
+----
 
 [.intro]
 == Events enhancement
@@ -23,27 +65,134 @@ Observers ordering
 Asynchronous events
 
 
-[.topic]
-== Splitting the CDI spec
-
-TIP: To add Java SE we split the spec
-
-* CDI core
-* CDI for Java SE
-* CDI for Java EE 
-
-[.topic]
-== Bootstrap API
+[.source]
+== We have improved the `Event` interface
 
 [source, subs="verbatim,quotes"]
 ----
-public static void main(String[] args) {      SeContainer container = SeContainerInitializer.newInstance() //<1>             .disableDiscovery()             .addBeanClasses(MyService.class)             .initialize();      MyService service = container.select(MyService.class).get(); //<2>      service.sayHello();      container.close(); }
+public interface Event<T> {
+     ...
+
+    public void fire(T event); //<1>
+
+    public CompletionStage<T> fireAsync(T event); //<2>
+
+    public CompletionStage<T> fireAsync(T event, NotificationOptions options); //<3>
+
+     ...
+}
 ----
-<1> `SeContainerInitializer` is a new api to configure and bootstrap a CDI container under Java SE. 
-<2> it returns a `SeContainer` that implements `Instance<Object>` allowing programmatic lookup
+<1> CDI 1.0 synchronous event firing
+<2> Async event firing. It returns a object implementing the Java 8 `CompletionStage<T>` (like `CompletableFuture`)
+<3> Async event firing with options (to provide a specific Executor or a implementation specific property)
+
+[.source]
+== So firing an async event is as easy as...
+
+[source, subs="verbatim,quotes"]
+----
+@ApplicationScoped
+public class MyBean {
+
+    @Inject
+     Event<Payload> event;  //<1>
+
+    public void someEvenMoreCriticalBusinessMethod() {
+         event.fireAsync(new Payload()); //<2>
+     }
+}
+----
+<1> We still inject the `Event` built-in bean
+<2> Here we call `fireAsync` in a call and forget pattern (do nothing with `CompletionStage`)
+
+[.topic]
+== On a consuming side...
+
+TIP: We introduced a new observer kind: `@ObservesAsync`
+
+[source, subs="verbatim,quotes"]
+----
+@ApplicationScoped
+public class MyOtherBean {
+
+    public void callMe(@ObservesAsync Payload payload) {  //<1>
+        // I am called in another thread
+    }
+
+}
+----
+<1> this observer will be invoked asynchronously
+
+[.topic]
+== Sync Vs Async in a Nutshell
+
+[.statement]
+====
+CAUTION: Sync events (with `fire()`) only trigger `@Observes`
+
+CAUTION: Async event (with `fireAsync()`) only trigger `@ObservesAsync`
+====
+
+[.intro]
+== Events enhancement
+
+Better programmatic solution to fire events
 
 
 [.topic]
-== Main configuration option for the container
+== Events outside programming model
 
-//TODO: a bit of SeContainerInitializer javadoc with explanantion on main methods
+TIP: When you can't `@Inject` the `Event` built-in bean
+
+[source, subs="verbatim,quotes"]
+----
+BeanManager bm = CDI.current.getBeanManager(); // <1>
+
+bm.fireEvent(myPayload); // <2>
+----
+<1> you need to retrieve the `BeanManager` (if you are in an extension, you can inject it in any lifecycle observer)
+<2> using the legacy `fireEvent` method
+
+[.topic]
+== In CDI 2.0 we introduced `getEvent()`
+
+TIP: More type safe approach
+
+TIP: Similar to Event<Object> injection so less side effect
+
+TIP: reusable and allows `fireAsync()`
+
+[source, subs="verbatim,quotes"]
+----
+BeanManager bm = CDI.current.getBeanManager();
+
+bm.getEvent().fireAsync(myPayload); //<1>
+----
+<1> firing an asynchronous event
+
+[.intro]
+== Observers and Extension
+
+Better programmatic solution to fire events
+
+[.topic]
+== `ProcessObserverMethod` enhancement
+[.statement]
+====
+
+TIP: You can now configure `ObserverMethod` way more in Extensions
+
+TIP: We added the following methods to `ProcessObserverMethod`
+
+[source, subs="verbatim,quotes"]
+----
+    public void setObserverMethod(ObserverMethod<T> observerMethod); //<1>
+
+    public ObserverMethodConfigurator<T> configureObserverMethod(); //<2>
+
+    public void veto(); //<3>
+----
+<1> replacing the `ObserverMethod` by a custom one.
+<2> configuring the observed `ObserverMethod` to change its behavior
+<3> vetoing the observer method (it will be ignored)
+====

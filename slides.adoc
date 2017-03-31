@@ -1,6 +1,6 @@
-= What's new in _CDI_ 2.0
+= What's _new_ in _CDI_ 2.0
 Antoine Sabot-Durand
-:description: Intrdocution to CDI
+:description: what's new in CDI 2.0
 :license: CC BY-SA 4.0
 :license-url: https://creativecommons.org/licenses/by-sa/4.0/
 :backend: dzslides
@@ -30,8 +30,7 @@ Antoine Sabot-Durand
 :stylesdir: stylesheets
 :stylesheet: custom.css
 :hide-uri-scheme:
-
-
+:slides-url: http://bit.ly/newcdi2
 
 
 [.topic]
@@ -50,26 +49,33 @@ Antoine Sabot-Durand
 [.topic]
 == Agenda
 
-TIP: _Slides_ here {slides-url}
+//TIP: _Slides_ here {slides-url}
 
-[.fartoosmall]
+[.smallest]
 ====
 * icon:clock-o[] Support for Java SE
-* icon:clock-o[] Programmatic way to activate Request Context
+* icon:clock-o[] Request Context activation
 * icon:clock-o[] Events enhancement
-* icon:clock-o[] A new option for bean discovery mode
+* icon:clock-o[] Interceptors enhancement
 * icon:clock-o[] Built-in annotation Literals
-* icon:clock-o[] Appy interceptor on produced beans
-* icon:clock-o[] Built-in annotation Literals
-* icon:clock-o[] Configurator API
-* icon:clock-o[] Alignment on Java 8 features (streams, lambdas, repeating qualifiers)
+* icon:clock-o[] Configurator APIs
 ====
 
 
 
 include::parts/javase.adoc[]
+
 include::parts/controllingRequestContext.adoc[]
+
 include::parts/events.adoc[]
+
+include::parts/interceptorFactory.adoc[]
+
+include::parts/annotationLiterals.adoc[]
+
+include::parts/configurators.adoc[]
+
+include::parts/testing_cdi2.adoc[]
 
 
 

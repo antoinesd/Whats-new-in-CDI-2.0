@@ -1,0 +1,46 @@
+[.intro]
+== Built-in annotation Literals
+
+
+[.topic]
+== Annotation Literals: the type safe way
+
+TIP: CDI is using Annotation Literals in various places
+
+TIP: It's a mean to provide an annotation instance
+
+TIP: So we provided AnnotationLiterals for:
+
+[.fartoosmall]
+====
+[.split]
+* icon:sign-in[] All scopes
+* icon:sign-in[] `@Inject`
+* icon:sign-in[] `@Qualifier`
+* icon:sign-in[] `@Alternative` & `@Specializes`
+* icon:sign-in[] `@Typed`
+* icon:sign-in[] `@Vetoed`
+* icon:sign-in[] `@NonBinding`
+* icon:sign-in[] `@New`
+====
+
+
+[.topic]
+== Using these literals
+
+TIP: If the annotation doesn't have members it's straightforward
+
+[source, subs="verbatim,quotes"]
+----
+ApplicationScoped apsl = ApplicationScoped.Literal.INSTANCE; //<1>
+----
+<1> for annotation included in CDI, Literal is defined the annotation class
+
+
+TIP: If the annotation have members use the of() method
+
+[source, subs="verbatim,quotes"]
+----
+Named myNamed = NamedLiteral.of("myName"); //<1>
+----
+<1> annotations coming from outside CDI have their literal in `javax.enterprise.inject.literal` package

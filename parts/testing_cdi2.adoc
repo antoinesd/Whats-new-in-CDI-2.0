@@ -1,0 +1,59 @@
+[.intro]
+== Playing with CDI 2.0
+
+[.topic]
+== You have 2 out of the box solutions
+
+[.statement]
+====
+TIP: CDI SE with Weld 3.0
+
+TIP: Patch JBoss WildFly to update CDI
+====
+
+
+[.source]
+== CDI SE
+
+TIP: Just add this dep to your `pom.xml`
+
+[source, xml, subs="verbatim,quotes", role="smaller"]
+----
+<dependency>
+    <groupId>org.jboss.weld.se</groupId>
+    <artifactId>weld-se-shaded</artifactId>
+    <version>3.0.0.CR2</version>
+</dependency>
+----
+
+TIP: And you're ready to
+
+[source, subs="verbatim,quotes", role="smaller"]
+----
+public class RunMe {
+
+    public static void main(String[] args) {
+        SeContainer container = SeContainerInitializer.newInstance()
+                .initialize();
+        // Put your code here
+    }
+}
+----
+
+[.source]
+== Patch JBoss WildFly
+
+TIP: Get the patch for WildFly: http://download.jboss.org/weld/3.0.0.CR2/[http://download.jboss.org/weld/3.0.0.CR2/^]
+
+TIP: Get WildFly 10.1.0.Final: http://wildfly.org/downloads/[http://wildfly.org/downloads/^]
+
+TIP: Unzip WildFly (not the patch) and go to `$WILDFLY_HOME/bin` directory
+
+TIP: Type the following command:
+
+[source, console, subs="verbatim,quotes", role="smaller"]
+----
+$ ./jboss-cli.sh --command="patch apply $PATH_TO_PATCH/wildfly-10.1.0.Final-weld-3.0.0.CR2-patch.zip"
+----
+
+TIP: Now you have a WildFly server running CDI 2.0 with Weld 3.0.0
