@@ -60,7 +60,7 @@ public class LegacyClass {
 TIP: You'd like to inject the map instead of setting it the classical way
 
 [.source]
-== Solving this in CDI 1.2 1/
+== Solving this in CDI 1.2 requires 2 classes
 
 TIP: You'll use an `InjectionTargetFactory` to do the job (and a producer for the config Map)
 

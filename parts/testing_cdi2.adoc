@@ -6,6 +6,8 @@
 
 [.statement]
 ====
+TIP: Glassfish 5 preview
+
 TIP: CDI SE with Weld 3.0
 
 TIP: Patch JBoss WildFly to update CDI
@@ -22,7 +24,7 @@ TIP: Just add this dep to your `pom.xml`
 <dependency>
     <groupId>org.jboss.weld.se</groupId>
     <artifactId>weld-se-shaded</artifactId>
-    <version>3.0.0.CR2</version>
+    <version>3.0.0.Final</version>
 </dependency>
 ----
 
@@ -43,7 +45,7 @@ public class RunMe {
 [.source]
 == Patch JBoss WildFly
 
-TIP: Get the patch for WildFly: http://download.jboss.org/weld/3.0.0.CR2/[http://download.jboss.org/weld/3.0.0.CR2/^]
+TIP: Get the patch for WildFly: http://download.jboss.org/weld/3.0.0.Final/[http://download.jboss.org/weld/3.0.0.Final/^]
 
 TIP: Get WildFly 10.1.0.Final: http://wildfly.org/downloads/[http://wildfly.org/downloads/^]
 
@@ -53,7 +55,7 @@ TIP: Type the following command:
 
 [source, console, subs="verbatim,quotes", role="smaller"]
 ----
-$ ./jboss-cli.sh --command="patch apply $PATH_TO_PATCH/wildfly-10.1.0.Final-weld-3.0.0.CR2-patch.zip"
+$ ./jboss-cli.sh --command="patch apply $PATH_TO_PATCH/wildfly-10.1.0.Final-weld-3.0.0.Final-patch.zip"
 ----
 
 TIP: Now you have a WildFly server running CDI 2.0 with Weld 3.0.0
